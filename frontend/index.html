@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Capstone TaskFlow</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <h1>Capstone TaskFlow</h1>
+    </header>
+
+    <main class="container">
+        <form id="task-form" class="task-form">
+            <h2>Add New Task</h2>
+            <div class="form-group">
+                <input type="text" id="title" placeholder="Task title" required>
+                <span id="title-error" class="error"></span>
+            </div>
+            <div class="form-group">
+                <select id="priority">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="text" id="due_date" placeholder="Due date (e.g. next friday)">
+            </div>
+            <div class="form-group">
+                <input type="number" id="project_id" placeholder="Project ID" value="1">
+            </div>
+            <button type="submit">Add Task</button>
+        </form>
+
+        <div id="task-list" class="task-list">
+            <p>Loading tasks...</p>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
