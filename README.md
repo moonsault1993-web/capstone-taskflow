@@ -131,5 +131,5 @@ Insertion sort becomes expensive as the number of tasks grows (O(n²)). However,
 
 - Name: Chirag Bhatia
 - Course: Software Development Engineering With Applied AI
-- Institution: Vishleshan i-Hub, IIIT Patna
+- Institution: Vishleshan i-Hub, IIT Patna
 - Capstone Project - 2026
