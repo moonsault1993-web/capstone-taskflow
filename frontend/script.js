@@ -5,7 +5,8 @@ const titleInput = document.getElementById("title");
 const titleError = document.getElementById("title-error");
 const taskList = document.getElementById("task-list");
 
-// Load from localStorage first
+let editId = null; // tracks which task is being edited
+
 function loadFromCache() {
     const cached = localStorage.getItem("tasks");
     if (cached) {
@@ -52,17 +53,32 @@ function renderTasks(tasks) {
         const actions = document.createElement("div");
         actions.className = "actions";
 
+        const editBtn = document.createElement("button");
+        editBtn.className = "edit-btn";
+        editBtn.textContent = "Edit";
+        editBtn.addEventListener("click", () => startEdit(task));
+
         const deleteBtn = document.createElement("button");
         deleteBtn.className = "delete-btn";
         deleteBtn.textContent = "Delete";
         deleteBtn.addEventListener("click", () => deleteTask(task.id));
 
+        actions.appendChild(editBtn);
         actions.appendChild(deleteBtn);
 
         div.appendChild(info);
         div.appendChild(actions);
         taskList.appendChild(div);
     });
+}
+
+function startEdit(task) {
+    editId = task.id;
+    titleInput.value = task.title;
+    document.getElementById("priority").value = task.priority;
+    document.getElementById("due_date").value = task.due_date || "";
+    document.getElementById("project_id").value = task.project_id;
+    titleInput.focus();
 }
 
 async function deleteTask(id) {
@@ -87,16 +103,26 @@ taskForm.addEventListener("submit", async (e) => {
         project_id: parseInt(document.getElementById("project_id").value) || 1
     };
 
-    await fetch(`${API_URL}/tasks/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-    });
+    if (editId) {
+        // Update existing task
+        await fetch(`${API_URL}/tasks/${editId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+        editId = null;
+    } else {
+        // Create new task
+        await fetch(`${API_URL}/tasks/`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+    }
 
     taskForm.reset();
     fetchTasks();
 });
 
-// Initial load
 loadFromCache();
 fetchTasks();

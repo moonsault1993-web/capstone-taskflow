@@ -1,23 +1,22 @@
+import re
+
 def mock_parse(description: str) -> dict:
-    """
-    Deterministic rule-based mock parser as specified in the assignment.
-    """
     original = description
     text = description.lower()
 
-    # Priority detection
+    # Priority
     priority = "medium"
     if "urgent" in text or "asap" in text:
         priority = "high"
     elif "whenever" in text or "low priority" in text:
         priority = "low"
 
-    # Due date detection
+    # Due date hint
     due_date_hint = None
     date_phrases = [
-        "today", "tomorrow", "next week",
         "next monday", "next tuesday", "next wednesday", "next thursday",
         "next friday", "next saturday", "next sunday",
+        "today", "tomorrow", "next week",
         "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"
     ]
 
@@ -26,16 +25,18 @@ def mock_parse(description: str) -> dict:
             due_date_hint = phrase
             break
 
-    # Title cleaning
+    # Title cleaning - remove priority and date keywords
     title = original
-    keywords_to_remove = ["urgent", "asap", "whenever", "low priority"] + date_phrases
+    remove_words = ["urgent", "asap", "whenever", "low priority"] + date_phrases
 
-    for kw in keywords_to_remove:
-        # case-insensitive replace
-        import re
-        title = re.sub(re.escape(kw), "", title, flags=re.IGNORECASE)
+    for word in remove_words:
+        title = re.sub(r'\b' + re.escape(word) + r'\b', '', title, flags=re.IGNORECASE)
 
-    title = " ".join(title.split()).strip()  # clean extra spaces
+    # Clean extra spaces and punctuation leftovers
+    title = re.sub(r'\s+', ' ', title).strip()
+    title = re.sub(r'\s+,', ',', title)
+    title = title.strip(' ,')
+
     if not title:
         title = "Untitled task"
 
